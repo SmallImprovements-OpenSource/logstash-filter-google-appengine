@@ -10,7 +10,7 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
   public
   def register
     @md5 = Digest::MD5.new
-  end
+  end  # def register
 
   public
   def filter(event)
@@ -23,7 +23,6 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
 
     if lines
       lines.each_with_index { |line, i|
-        next if line.empty?
         # noinspection RubyStringKeysInHashInspection
         line_data = {
             '_id' => @md5.hexdigest(payload['requestId'] + i.to_s),
@@ -32,21 +31,22 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
                         .merge(payload)
                         .merge(line)
 
-        yield creat_event(line_data)
+        yield create_event(line_data)
 
       }
     else
       payload['_id'] = @md5.hexdigest payload['requestId']
       payload['time'] = payload['endTime']
-      yield creat_event(payload)
+      yield create_event(payload)
     end
     event.cancel
-  end
+  end # def filter
 
   private
-  def creat_event(payload)
+  def create_event(payload)
     new_event = LogStash::Event::new(payload)
     filter_matched(new_event)
     new_event
-  end
-end
+  end # def filter
+
+end # class LogStash::Filters::GoogleAppengine
