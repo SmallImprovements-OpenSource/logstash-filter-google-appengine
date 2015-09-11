@@ -18,32 +18,35 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
 
     payload = event['protoPayload']
     payload.delete '@type'
+    payload['type'] = 'gae'
     lines = payload.delete 'line'
+
     if lines
       lines.each_with_index { |line, i|
         next if line.empty?
-        line_data = {}
+        # noinspection RubyStringKeysInHashInspection
+        line_data = {
+            '_id' => @md5.hexdigest(payload['requestId'] + i.to_s),
+            'message' => line.delete('logMessage')
+        }
+                        .merge(payload)
+                        .merge(line)
 
-        line_data = line_data.merge(payload)
-        line_data = line_data.merge(line)
-        line_data['_id'] = @md5.hexdigest line_data['requestId'] + i.to_s
-        line_data['message'] = line_data.delete 'logMessage'
-        line_data.delete 'logMessage'
+        yield creat_event(line_data)
 
-        new_event = LogStash::Event::new(line_data)
-        filter_matched(new_event)
-        yield(new_event)
       }
     else
       payload['_id'] = @md5.hexdigest payload['requestId']
       payload['time'] = payload['endTime']
-
-      new_event = LogStash::Event::new(payload)
-      filter_matched(new_event)
-
-      yield new_event
+      yield creat_event(payload)
     end
-
     event.cancel
+  end
+
+  private
+  def creat_event(payload)
+    new_event = LogStash::Event::new(payload)
+    filter_matched(new_event)
+    new_event
   end
 end
