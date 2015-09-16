@@ -10,43 +10,50 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
   public
   def register
     @md5 = Digest::MD5.new
-  end  # def register
+  end
 
-  public
   def filter(event)
     return unless filter?(event)
-
     payload = event['protoPayload']
     payload.delete '@type'
     payload['type'] = 'gae'
     lines = payload.delete 'line'
-
     if lines
       lines.each_with_index { |line, i|
-        # noinspection RubyStringKeysInHashInspection
-        line_data = {
-            '_id' => @md5.hexdigest(payload['requestId'] + i.to_s),
-            'message' => line.delete('logMessage')
-        }
-                        .merge(payload)
-                        .merge(line)
-
-        yield create_event(line_data)
-
+        yield create_event(collect_line_data(i, line, payload))
       }
     else
-      payload['_id'] = @md5.hexdigest payload['requestId']
-      payload['time'] = payload['endTime']
-      yield create_event(payload)
+      yield create_event(collect_resource_request_data(payload))
     end
     event.cancel
-  end # def filter
+  end
 
   private
+  # noinspection RubyStringKeysInHashInspection
+  def collect_line_data(i, line, payload)
+    {
+        '_id' => @md5.hexdigest(payload['requestId'] + i.to_s),
+        'message' => line.delete('logMessage'),
+        'position' => i
+    }
+        .merge(payload)
+        .merge(line)
+  end
+
+  # noinspection RubyStringKeysInHashInspection
+  def collect_resource_request_data(payload)
+    {
+        '_id' => @md5.hexdigest(payload['requestId']),
+        'time' => payload['endTime'],
+        'position' => 0
+    }
+        .merge(payload)
+  end
+
   def create_event(payload)
     new_event = LogStash::Event::new(payload)
     filter_matched(new_event)
     new_event
-  end # def filter
+  end
 
 end # class LogStash::Filters::GoogleAppengine
