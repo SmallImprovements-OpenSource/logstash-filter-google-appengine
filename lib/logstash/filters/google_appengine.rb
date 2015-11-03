@@ -16,7 +16,7 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
     return unless filter?(event)
     payload = event['protoPayload']
     payload.delete '@type'
-    payload['type'] = 'gae'
+    payload['type'] = event['type']
     lines = payload.delete 'line'
     if lines
       lines.each_with_index { |line, i|
