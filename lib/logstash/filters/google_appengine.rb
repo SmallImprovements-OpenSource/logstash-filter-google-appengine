@@ -32,7 +32,7 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
   # noinspection RubyStringKeysInHashInspection
   def collect_line_data(i, line, payload)
     {
-        '_id' => @md5.hexdigest(payload['requestId'] + i.to_s),
+        'id' => @md5.hexdigest(payload['requestId'] + i.to_s),
         'message' => line.delete('logMessage'),
         'position' => i
     }
@@ -43,7 +43,7 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
   # noinspection RubyStringKeysInHashInspection
   def collect_resource_request_data(payload)
     {
-        '_id' => @md5.hexdigest(payload['requestId']),
+        'id' => @md5.hexdigest(payload['requestId']),
         'time' => payload['endTime'],
         'position' => 0
     }
