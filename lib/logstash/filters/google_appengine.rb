@@ -14,6 +14,8 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
 
   def filter(event)
     return unless filter?(event)
+    return unless event['protoPayload']
+
     payload = event['protoPayload']
     payload.delete '@type'
     payload['type'] = event['type']
