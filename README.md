@@ -67,20 +67,10 @@ You can use the same **2.1** method to run your plugin in an installed Logstash 
 
 - Build your plugin gem
 ```sh
-gem build logstash-filter-awesome.gemspec
+gem build logstash-filter-google_appengine.gemspec
 ```
 - Install the plugin from the Logstash home
 ```sh
-bin/plugin install /your/local/plugin/logstash-filter-awesome.gem
+bin/plugin install /your/local/plugin/logstash-filter-google_appengine-*.gem
 ```
 - Start Logstash and proceed to test the plugin
-
-## Contributing
-
-All contributions are welcome: ideas, patches, documentation, bug reports, complaints, and even something you drew up on a napkin.
-
-Programming is not a required skill. Whatever you've seen about open source and maintainers or community members  saying "send patches or die" - you will not see that here.
-
-It is more important to the community that you are able to contribute.
-
-For more information about contributing, see the [CONTRIBUTING](https://github.com/elastic/logstash/blob/master/CONTRIBUTING.md) file.

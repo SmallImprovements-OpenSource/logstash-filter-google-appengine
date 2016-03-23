@@ -20,7 +20,10 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
     payload = event['protoPayload']
     payload.delete '@type'
     payload['type'] = event['type']
+    payload['latencyInt'] = payload['latency'].delete("s").to_f
+
     lines = payload.delete 'line'
+
     if lines
       lines.each_with_index { |line, i|
         yield create_event(collect_line_data(i, line, payload))
@@ -61,7 +64,7 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
 
   def get_id(source)
     @semaphore.synchronize {
-      @md5.hexdigest(source)
+      @md5.hexdigest(source)  #md5 isn't threadsafe :(
     }
   end
 
