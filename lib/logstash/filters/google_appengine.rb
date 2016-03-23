@@ -20,7 +20,8 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
     payload = event['protoPayload']
     payload.delete '@type'
     payload['type'] = event['type']
-    payload['latencyInt'] = payload['latency'].delete("s").to_f
+    payload['latencyS'] = to_number(payload['latency'])
+    payload['pendingTimeS'] = to_number(payload['pendingTime'])
 
     lines = payload.delete 'line'
 
@@ -36,6 +37,10 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
 
   private
   # noinspection RubyStringKeysInHashInspection
+  def to_number(string)
+    string ? string.delete("s").to_f : 0.0
+  end
+
   def collect_line_data(i, line, payload)
     {
         'id' => get_id(payload['requestId'] + i.to_s),
@@ -64,7 +69,7 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
 
   def get_id(source)
     @semaphore.synchronize {
-      @md5.hexdigest(source)  #md5 isn't threadsafe :(
+      @md5.hexdigest(source) #md5 isn't threadsafe :(
     }
   end
 
