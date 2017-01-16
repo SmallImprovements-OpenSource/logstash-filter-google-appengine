@@ -15,11 +15,11 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
 
   def filter(event)
     return unless filter?(event)
-    return unless event['protoPayload']
+    return unless event.get('protoPayload')
 
-    payload = event['protoPayload']
+    payload = event.get('protoPayload')
     payload.delete '@type'
-    payload['type'] = event['type']
+    payload['type'] = event.get('type')
     payload['latencyS'] = to_number(payload['latency'])
     if payload['pendingTime']
       payload['pendingTimeS'] = to_number(payload['pendingTime'])
