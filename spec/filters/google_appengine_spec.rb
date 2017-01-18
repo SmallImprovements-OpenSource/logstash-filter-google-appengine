@@ -14,7 +14,7 @@ describe LogStash::Filters::GoogleAppengine do
   CONFIG
 
   describe "should merge the request payload with the reuest lines data" do
-    test_sample = LogStash::Json::load(File.open("spec/filters/appengine.logs.jsonl", "rb").read)
+    test_sample = LogStash::Json::load(File.open("spec/filters/appengine.logs.json", "rb").read)
     sample (test_sample) do
       LATENCY_OF_REQUEST = 0.115752
       insist { subject.length } == 3
@@ -37,7 +37,7 @@ describe LogStash::Filters::GoogleAppengine do
   end
 
   describe "should handle logs even when they have no lines" do
-    test_sample = LogStash::Json.load(File.open("spec/filters/appengine.logs-without-lines.jsonl", "rb").read)
+    test_sample = LogStash::Json.load(File.open("spec/filters/appengine.logs-without-lines.json", "rb").read)
     sample (test_sample) do
 
       insist { subject.get("resource") } == "/images/website/welcome/keyFeatures/objectives.jpg"
