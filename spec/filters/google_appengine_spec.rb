@@ -67,6 +67,13 @@ describe LogStash::Filters::GoogleAppengine do
     end
   end
 
+  describe "should calculate appTimeS from latencyS and pendingTimeS" do
+    test_sample = LogStash::Json.load(File.open("spec/filters/log-with-pendingTime.json", "rb").read)
+    sample (test_sample) do
+      insist { subject[0].get("appTimeS") } == 0.779603 - 0.712152958
+    end
+  end
+
 end
 
 
