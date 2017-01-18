@@ -20,7 +20,10 @@ Need help? Try #logstash on freenode IRC or the https://discuss.elastic.co/c/log
 ### 1. Plugin Developement and Testing
 
 #### Code
-- To get started, you'll need JRuby with the Bundler gem installed.
+- To get started, you'll need Ruby with the Bundler gem installed.
+```sh
+gem install bundler
+```
 
 - Create a new plugin or clone and existing from the GitHub [logstash-plugins](https://github.com/logstash-plugins) organization. We also provide [example plugins](https://github.com/logstash-plugins?query=example).
 
