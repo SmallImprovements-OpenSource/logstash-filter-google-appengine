@@ -20,7 +20,9 @@ Need help? Try #logstash on freenode IRC or the https://discuss.elastic.co/c/log
 ### 1. Plugin Developement and Testing
 
 #### Code
-- To get started, you'll need Ruby with the Bundler gem installed.
+- To get started, you'll need to install [JRuby](http://jruby.org/). Regular Ruby will not work.
+
+- After installing Ruby, install the bundler gem
 ```sh
 gem install bundler
 ```
