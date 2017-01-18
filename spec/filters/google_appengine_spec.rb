@@ -46,6 +46,31 @@ describe LogStash::Filters::GoogleAppengine do
       insist { subject.get("@type") } == nil
     end
   end
+
+  describe "should convert latency (string) to latencyS (number)" do
+    test_sample = LogStash::Json.load(File.open("spec/filters/log-with-pendingTime.json", "rb").read)
+    sample (test_sample) do
+      insist { subject[0].get("latency") } == "0.779603s"
+      insist { subject[0].get("latencyS") } == 0.779603
+    end
+  end
+
+  describe "should convert pendingTime (string) to pendingTimeS (number)" do
+    test_sample = LogStash::Json.load(File.open("spec/filters/log-with-pendingTime.json", "rb").read)
+    sample (test_sample) do
+      insist { subject[0].get("pendingTime") } == "0.712152958s"
+      insist { subject[0].get("pendingTimeS") } == 0.712152958
+    end
+  end
+
+  describe "should convert missing pendingTime to missing pendingTimeS" do
+    test_sample = LogStash::Json.load(File.open("spec/filters/log-without-pendingTime.json", "rb").read)
+    sample (test_sample) do
+      insist { subject[0].get("pendingTime") } == nil
+      insist { subject[0].get("pendingTimeS") } == nil
+    end
+  end
+
 end
 
 
