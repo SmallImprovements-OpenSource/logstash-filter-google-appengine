@@ -59,11 +59,11 @@ describe LogStash::Filters::GoogleAppengine do
     end
   end
 
-  describe "should convert missing pendingTime to missing pendingTimeS" do
+  describe "should convert missing pendingTime to pendingTimeS is 0" do
     test_sample = LogStash::Json.load(File.open("spec/filters/log-without-pendingTime.json", "rb").read)
     sample (test_sample) do
       insist { subject[0].get("pendingTime") } == nil
-      insist { subject[0].get("pendingTimeS") } == nil
+      insist { subject[0].get("pendingTimeS") } == 0
     end
   end
 

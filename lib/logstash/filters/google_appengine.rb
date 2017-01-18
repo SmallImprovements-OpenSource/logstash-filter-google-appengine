@@ -21,9 +21,7 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
     payload.delete '@type'
     payload['type'] = event.get('type')
     payload['latencyS'] = to_number(payload['latency'])
-    if payload['pendingTime']
-      payload['pendingTimeS'] = to_number(payload['pendingTime'])
-    end
+    payload['pendingTimeS'] = to_number(payload['pendingTime'])
     lines = payload.delete 'line'
 
     if lines
