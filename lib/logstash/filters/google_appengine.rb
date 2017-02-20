@@ -1,16 +1,14 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
-require 'digest'
 
 class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
 
   config_name "google_appengine"
 
   public
+
   def register
-    @md5 = Digest::MD5.new
-    @semaphore = Mutex.new
   end
 
   def filter(event)
@@ -43,7 +41,7 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
 
   def collect_line_data(i, line, payload)
     {
-        'id' => get_id(payload['requestId'] + i.to_s),
+        'id' => (payload['requestId'] + i.to_s),
         'message' => line.delete('logMessage'),
         'position' => i
     }
@@ -54,7 +52,7 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
   # noinspection RubyStringKeysInHashInspection
   def collect_resource_request_data(payload)
     {
-        'id' => get_id(payload['requestId']),
+        'id' => payload['requestId'],
         'time' => payload['endTime'],
         'position' => 0
     }
@@ -65,12 +63,6 @@ class LogStash::Filters::GoogleAppengine < LogStash::Filters::Base
     new_event = LogStash::Event::new(payload)
     filter_matched(new_event)
     new_event
-  end
-
-  def get_id(source)
-    @semaphore.synchronize {
-      @md5.hexdigest(source) #md5 isn't threadsafe :(
-    }
   end
 
 end # class LogStash::Filters::GoogleAppengine
