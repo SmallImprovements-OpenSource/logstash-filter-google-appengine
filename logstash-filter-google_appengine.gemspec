@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 
   s.name = 'logstash-filter-google_appengine'
-  s.version = '0.120.0'
+  s.version = '0.121.0'
   s.licenses = ['Apache License (2.0)']
   s.summary = "This filter may be used to decode via inputs appengine logs"
   s.description = "This gem is a logstash plugin required to be installed on top of the Logstash core pipeline using $LS_HOME/bin/plugin install gemname. This gem is not a stand-alone program"
@@ -16,10 +16,9 @@ Gem::Specification.new do |s|
 
   s.metadata = {"logstash_plugin" => "true", "logstash_group" => "filter"}
 
-  #s.add_runtime_dependency "logstash-core", '>= 5.0.0', '< 6.0.0'
-  s.add_runtime_dependency "logstash-core", '5.0.0'
+  s.add_runtime_dependency "logstash-core-plugin-api", ">= 1.60", "<= 2.99"
 
-  s.add_development_dependency 'logstash-devutils', '>= 1.0.0', '< 2.0.0'
-  s.add_development_dependency 'logstash-core-plugin-api', '2.1.17'
+  s.add_development_dependency 'logstash-devutils'
+
 end
 
